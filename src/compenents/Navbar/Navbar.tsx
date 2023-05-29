@@ -123,7 +123,6 @@ function NavBar({}: Props) {
         <div
           onClick={() => {
             logout();
-            router.push("/");
             setUser(null);
           }}
         >
