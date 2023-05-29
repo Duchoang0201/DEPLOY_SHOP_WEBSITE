@@ -207,7 +207,6 @@ function Products({ products, categories, supplier }: Props) {
                                 );
                               } else {
                                 add({ product: items, quantity: 1 });
-                                message.success(1.5);
                                 message.success(
                                   {
                                     content: "Đã thêm sản phẩm vào giỏ hàng!",
