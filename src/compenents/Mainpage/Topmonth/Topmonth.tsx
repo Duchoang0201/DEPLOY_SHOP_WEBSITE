@@ -66,7 +66,7 @@ export default function Topmoth({ topMonth }: any) {
           }}
           pagination={true}
           modules={[Autoplay, EffectCoverflow, Pagination]}
-          className="Top_Month py-4 px-3 " // Remove any shadow styles from the className
+          className="Top_Month py-4 px-3" // Remove any shadow styles from the className
           breakpoints={{
             0: {
               slidesPerView: 1,

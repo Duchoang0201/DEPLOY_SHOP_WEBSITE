@@ -67,7 +67,7 @@ export default function App({ hotDeal }: any) {
           0: {
             slidesPerView: 1,
           },
-          400: {
+          500: {
             slidesPerView: 2,
           },
           900: {
@@ -82,7 +82,7 @@ export default function App({ hotDeal }: any) {
       >
         {hotDeals.length > 0 &&
           hotDeals.map((item: any, index: any) => (
-            <SwiperSlide className="py-3 px-3" key={index}>
+            <SwiperSlide className="px-3 py-4" key={index}>
               <Card
                 className="border rounded-4 "
                 bordered={false}

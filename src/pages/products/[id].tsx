@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 
-import router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 
 import axios from "axios";
 import Image from "next/image";
@@ -46,9 +46,6 @@ export default function ProductDetails({ product }: Props) {
   const [visible, setVisible] = useState(false);
   const [picture, setPicture] = useState<any>();
   const [data, setData] = useState<Array<any>>(product.rateInfo);
-  console.log("product:", product);
-
-  console.log("data:", data);
 
   const { add, items, increase } = useCartStore((state: any) => state);
 
@@ -56,13 +53,17 @@ export default function ProductDetails({ product }: Props) {
   //////////////////
 
   const [productMain, setProductMain] = useState<any>();
+
   useEffect(() => {
     axios.get(`${URL_ENV}/products/${product._id}`).then((res) => {
       setProductMain(res.data);
     });
   }, [product]);
 
-  useEffect(() => {}, [product]);
+  useEffect(() => {
+    console.log("update data: ", product);
+    setData(product.rateInfo);
+  }, [product]);
   const onFinish = async (record: any) => {
     const customer = {
       customerId: auth.payload?._id,
@@ -220,33 +221,19 @@ export default function ProductDetails({ product }: Props) {
               <div className="mt-1 ">
                 <button
                   onClick={() => {
-                    if (auth) {
-                      const productId = productMain?._id;
+                    const productId = productMain?._id;
 
-                      console.log("««««« items »»»»»", items);
-                      const productExists = items.some(
-                        (item: any) => item.product._id === productId
-                      );
-                      console.log("««««« productExists »»»»»", productExists);
-                      if (productExists === true) {
-                        increase(productId);
-                        message.success("Thêm 1 sản phẩm vào giỏ hàng!", 1.5);
-                      } else {
-                        add({ product: product, quantity: 1 });
-                        message.success("Đã thêm sản phẩm vào giỏ hàng!", 1.5);
-                      }
+                    console.log("««««« items »»»»»", items);
+                    const productExists = items.some(
+                      (item: any) => item.product._id === productId
+                    );
+                    console.log("««««« productExists »»»»»", productExists);
+                    if (productExists === true) {
+                      increase(productId);
+                      message.success("Thêm 1 sản phẩm vào giỏ hàng!", 1.5);
                     } else {
-                      router.push("/login");
-                      message.warning(
-                        {
-                          content:
-                            "Vui lòng đăng nhập tài khoản để thêm vào giỏ hàng!!",
-                          style: {
-                            marginTop: 130,
-                          },
-                        },
-                        1.5
-                      );
+                      add({ product: product, quantity: 1 });
+                      message.success("Đã thêm sản phẩm vào giỏ hàng!", 1.5);
                     }
                   }}
                   className="w-100  border-bottom border-dark  rounded bg-gradient text-light"
