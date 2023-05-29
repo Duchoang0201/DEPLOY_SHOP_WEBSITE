@@ -59,7 +59,7 @@ export default function App({ hotTrend }: any) {
         {hotDeals.length > 0 &&
           hotDeals.map((item: any, index: any) => (
             <>
-              <SwiperSlide className="px-4 py-4">
+              <SwiperSlide className="py-3 px-3">
                 <Card
                   className=" rounded-4 "
                   bordered={false}
