@@ -211,7 +211,6 @@ function Products({ products, categories, supplier }: Props) {
                                   {
                                     content: "Đã thêm sản phẩm vào giỏ hàng!",
                                     style: {
-                                      zIndex: 9999999999,
                                       marginTop: 130,
                                     },
                                   },

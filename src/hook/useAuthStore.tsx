@@ -33,7 +33,7 @@ export const useAuthStore = create(
               }
               if (loginData && loginData.payload && loginData.payload._id) {
                 axios.patch(`${URL_ENV}/customers/${loginData.payload._id}`, {
-                  LastActivity: new Date(),
+                  lastActivity: new Date(),
                 });
               }
             } catch (err: any) {
@@ -48,7 +48,7 @@ export const useAuthStore = create(
 
             if (loginData && loginData.payload && loginData.payload._id) {
               axios.patch(`${URL_ENV}/customers/${loginData.payload._id}`, {
-                LastActivity: new Date(),
+                lastActivity: new Date(),
               });
             }
             localStorage.clear();

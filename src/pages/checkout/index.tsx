@@ -152,13 +152,23 @@ const CheckoutPayment = (props: Props) => {
       lat: position.lat,
       lng: position.lon,
     };
-    console.log("««««« oderData »»»»»", orderData);
+
     if (payMethod === "shipCod") {
       orderData.paymentType = "CASH";
 
       const payPost = async () => {
-        const found = await axios.post(`${URL_ENV}/orders`, orderData);
+        const found: any = await axios.post(`${URL_ENV}/orders`, orderData);
+        console.log("««««« found »»»»»", found);
         if (found) {
+          //Change stock of product :
+          const handleChangeStock = await axios
+            .post(`${URL_ENV}/products/orderp/${found?.data._id}/stock`)
+            .then((response) => {
+              console.log(response.data.message);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
           router.push("/success-payment");
         }
       };
@@ -173,8 +183,22 @@ const CheckoutPayment = (props: Props) => {
 
       const payPost = async () => {
         try {
-          const postOder = await axios.post(`${URL_ENV}/orders`, orderData);
+          const postOder: any = await axios.post(
+            `${URL_ENV}/orders`,
+            orderData
+          );
+
           if (postOder) {
+            //Change stock of product :
+            const handleChangeStock = await axios
+              .post(`${URL_ENV}/products/orderp/${postOder?.data?._id}/stock`)
+              .then((response) => {
+                console.log(response.data.message);
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+
             const found = await axios.post(
               `${URL_ENV}/orders/pay/create_momo_url`,
               { amount: amount }
@@ -200,12 +224,20 @@ const CheckoutPayment = (props: Props) => {
         try {
           const postOder = await axios.post(`${URL_ENV}/orders`, orderData);
           if (postOder) {
+            const handleChangeStock = await axios
+              .post(`${URL_ENV}/products/orderp/${postOder?.data?._id}/stock`)
+              .then((response) => {
+                console.log(response.data.message);
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+
             const found = await axios.post(
               `${URL_ENV}/orders/pay/create_vnpay_url`,
               { amount: amount }
             );
 
-            console.log("««««« found »»»»»", found.data);
             window.location.href = found.data.urlPay;
           }
         } catch (error) {

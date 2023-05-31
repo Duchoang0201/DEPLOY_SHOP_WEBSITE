@@ -15,11 +15,6 @@ const Login = () => {
   const onLogin = async (values: any) => {
     const { email, password } = values;
     login({ email, password });
-    // if (auth?.payload?._id) {
-    //   router.push("/");
-    // } else {
-    //   router.push("/login");
-    // }
   };
   useEffect(() => {}, [refresh]);
 

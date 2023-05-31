@@ -66,9 +66,11 @@ export default function App({ hotDeal }: any) {
         breakpoints={{
           0: {
             slidesPerView: 1,
+            centeredSlides: true,
           },
           500: {
             slidesPerView: 2,
+            centeredSlides: true,
           },
           900: {
             slidesPerView: 3,

@@ -45,8 +45,8 @@ export default function ProductDetails({ product }: Props) {
   const [commentForm] = Form.useForm();
   const [visible, setVisible] = useState(false);
   const [picture, setPicture] = useState<any>();
-  const [data, setData] = useState<Array<any>>(product.rateInfo);
-
+  const [data, setData] = useState<any>(product.rateInfo);
+  const [refresh, setRefresh] = useState<any>(0);
   const { add, items, increase } = useCartStore((state: any) => state);
 
   const { auth } = useAuthStore((state: any) => state);
@@ -57,13 +57,14 @@ export default function ProductDetails({ product }: Props) {
   useEffect(() => {
     axios.get(`${URL_ENV}/products/${product._id}`).then((res) => {
       setProductMain(res.data);
+      setData(res.data.rateInfo);
     });
-  }, [product]);
+  }, [product._id, refresh]);
 
-  useEffect(() => {
-    console.log("update data: ", product);
-    setData(product.rateInfo);
-  }, [product]);
+  // useEffect(() => {
+  //   console.log("update data: ", product);
+  //   setData(product.rateInfo);
+  // }, [product]);
   const onFinish = async (record: any) => {
     const customer = {
       customerId: auth.payload?._id,
@@ -98,6 +99,7 @@ export default function ProductDetails({ product }: Props) {
           "Cảm ơn quý khách đã đánh giá sản phẩm của chúng tôi",
           1.5
         );
+        setRefresh((f: any) => f + 1);
       })
       .catch((err) => {
         console.log(err);
@@ -148,7 +150,10 @@ export default function ProductDetails({ product }: Props) {
                     if (index <= 20)
                       return (
                         <>
-                          <SwiperSlide className="ms-2 w-25">
+                          <SwiperSlide
+                            key={`${items._id}-${index}`}
+                            className="ms-2 w-25"
+                          >
                             <Image
                               src={`${URL_ENV}/${items}`}
                               alt="Description of the image"
@@ -272,9 +277,10 @@ export default function ProductDetails({ product }: Props) {
                   <List
                     itemLayout="horizontal"
                     dataSource={data}
-                    renderItem={(item, index) => (
+                    renderItem={(item: any, index) => (
                       <List.Item>
                         <List.Item.Meta
+                          key={`${item._id}-${index}`}
                           title={
                             <div>
                               <span style={{ marginRight: "10px" }}>
