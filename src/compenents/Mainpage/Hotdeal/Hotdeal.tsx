@@ -5,14 +5,12 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Pagination, Navigation, Autoplay } from "swiper";
 import axios from "axios";
-import { Button, Card, Divider, Rate } from "antd";
-import Image from "next/image";
+import { Button, Card, Divider, Rate, Image } from "antd";
 import router from "next/router";
 const URL_ENV = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:9000";
 
 export default function App({ hotDeal }: any) {
   const [hotDeals, setHotDeals] = useState([]);
-  const swiperRef = useRef<any>(null);
   const [autoplayConfig, setAutoplayConfig] = useState({
     delay: 3000,
     disableOnInteraction: false,
@@ -33,18 +31,6 @@ export default function App({ hotDeal }: any) {
     fetchData();
   }, [hotDeal]);
 
-  useEffect(() => {
-    const autoplayTimeout = setTimeout(() => {
-      if (swiperRef.current) {
-        swiperRef.current.autoplay.start();
-      }
-    }, 2000);
-
-    return () => {
-      clearTimeout(autoplayTimeout);
-    };
-  }, []);
-
   const handleReachEnd = () => {
     setAutoplayConfig((prevConfig) => ({
       ...prevConfig,
@@ -55,56 +41,51 @@ export default function App({ hotDeal }: any) {
   return (
     <>
       <Swiper
+        speed={3000}
         centeredSlides={true}
         slidesPerView={3}
+        initialSlide={3}
         navigation={true}
         pagination={{
           clickable: true,
         }}
-        spaceBetween={50}
+        spaceBetween={160}
         className={`mySwiper`}
         breakpoints={{
           0: {
             slidesPerView: 1,
             centeredSlides: true,
-          },
-          500: {
-            slidesPerView: 2,
-            centeredSlides: true,
+            initialSlide: 3,
           },
           900: {
+            slidesPerView: 2,
+            centeredSlides: true,
+            initialSlide: 3,
+          },
+          1200: {
             slidesPerView: 3,
+            centeredSlides: true,
+            initialSlide: 3,
           },
         }}
         modules={[Pagination, Navigation, Autoplay]}
         autoplay={autoplayConfig}
-        loop={false}
-        onSwiper={(swiper) => (swiperRef.current = swiper)}
-        onReachEnd={handleReachEnd}
+        loop={true}
       >
         {hotDeals.length > 0 &&
           hotDeals.map((item: any, index: any) => (
-            <SwiperSlide className="px-3 py-4" key={index}>
+            <SwiperSlide key={`${item._id}-${index + 1}`}>
               <Card
                 className="border rounded-4 "
                 bordered={false}
-                style={{
-                  width: 300,
-                  height: 500,
-                  background: `rgba(245,245,245,0.8)`,
-                }}
+                style={{ backgroundColor: "rgba(0,0,0,0.1)" }}
               >
                 <Card
-                  className="border rounded-4"
-                  style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+                  className="border rounded-4 text-center"
+                  style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
                 >
                   {" "}
-                  <Image
-                    alt={item.name}
-                    src={`${URL_ENV}/${item.imageUrl}`}
-                    width={200}
-                    height={200}
-                  />
+                  <Image alt={item.name} src={`${URL_ENV}/${item.imageUrl}`} />
                 </Card>
                 <p style={{ height: 40 }} className="text-center">
                   {item.name}

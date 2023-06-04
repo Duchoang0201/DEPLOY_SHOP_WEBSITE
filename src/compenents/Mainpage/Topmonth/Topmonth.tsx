@@ -11,9 +11,9 @@ import "swiper/css/navigation";
 import { Autoplay, EffectCoverflow, Pagination } from "swiper";
 
 import axios from "axios";
-import { Button, Card, Divider, Rate } from "antd";
+import { Button, Card, Divider, Rate, Image } from "antd";
 
-import Image from "next/image";
+// import Image from "next/image";
 
 import router from "next/router";
 
@@ -21,7 +21,6 @@ const URL_ENV = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:9000";
 
 export default function Topmoth({ topMonth }: any) {
   const [hotDeals, setHotDeals] = useState([]);
-  const swiperRef = useRef<any>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,17 +36,6 @@ export default function Topmoth({ topMonth }: any) {
     fetchData();
   }, [topMonth]);
 
-  useEffect(() => {
-    const autoplayTimeout = setTimeout(() => {
-      if (swiperRef.current) {
-        swiperRef.current.autoplay.start();
-      }
-    }, 1000);
-
-    return () => {
-      clearTimeout(autoplayTimeout);
-    };
-  }, []);
   return (
     <>
       <div>
@@ -56,55 +44,52 @@ export default function Topmoth({ topMonth }: any) {
           effect={"coverflow"}
           grabCursor={true}
           slidesPerView={4}
-          spaceBetween={160}
-          initialSlide={3}
+          spaceBetween={50}
           coverflowEffect={{
-            rotate: 30,
-            stretch: 2,
-            depth: 50,
-            modifier: 1,
+            rotate: 0,
+            stretch: 0,
+            depth: 100,
+            modifier: 2.5,
           }}
           pagination={true}
           modules={[Autoplay, EffectCoverflow, Pagination]}
-          className="Top_Month py-4 px-3 text-center" // Remove any shadow styles from the className
+          speed={3000}
           breakpoints={{
             0: {
               slidesPerView: 1,
               centeredSlides: true,
-            },
-            500: {
-              slidesPerView: 2,
-              centeredSlides: true,
+              initialSlide: 3,
             },
             900: {
+              slidesPerView: 2,
+              centeredSlides: true,
+              initialSlide: 3,
+            },
+            1200: {
               slidesPerView: 3,
+              centeredSlides: true,
+              initialSlide: 3,
             },
           }}
-          onSwiper={(swiper) => (swiperRef.current = swiper)}
         >
           {hotDeals.length > 0 &&
             hotDeals.map((item: any, index: any) => (
               <>
                 <SwiperSlide
-                  className="text-center"
+                  // className="text-center"
                   key={`${item._id}-${index + 1}`}
                 >
                   <Card
+                    className="text-center"
                     key={`${item.name}-${index + 1}`}
                     bordered={false}
-                    style={{
-                      width: 300,
-                      height: 500,
-                      background: `rgba(245,245,245,0.8)`,
-                    }}
+                    style={{ backgroundColor: "rgba(0,0,0,0.1)" }}
                   >
-                    <Card style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+                    <Card style={{ backgroundColor: "rgba(0,0,0,0.3)" }}>
                       {" "}
                       <Image
                         alt={item.name}
                         src={`${URL_ENV}/${item.imageUrl}`}
-                        width={200}
-                        height={200}
                       />
                     </Card>
 

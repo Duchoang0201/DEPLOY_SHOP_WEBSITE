@@ -1,10 +1,11 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Avatar, Badge, Dropdown, Space, message } from "antd";
-import { Menu, Input, Select } from "antd";
+import { Avatar, Badge, Dropdown, Space, Button } from "antd";
+import { Menu, Input, Form } from "antd";
 import Style from "./Navbar.module.css";
 import { useRouter } from "next/router";
 import { useAuthStore } from "@/hook/useAuthStore";
+import { PropsSearch } from "./PropsSearch";
 
 import {
   UserAddOutlined,
@@ -15,15 +16,23 @@ import {
   UserOutlined,
   BranchesOutlined,
 } from "@ant-design/icons";
-
+const { Search } = Input;
 import { useCartStore } from "../../hook/useCountStore";
 
-type Props = {};
+type Props = {
+  data: any;
+};
 const URL_ENV = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:9000";
+// const API_URL_Product = `${URL_ENV}/products/${}`;
 
-function NavBar({}: Props) {
+/////////////search <ant design> ///////////////////////////////
+
+////////////////////////////////////////////////
+
+function NavBar() {
   const { auth }: any = useAuthStore((state: any) => state);
   const { items: itemsCart }: any = useCartStore((state: any) => state);
+  const { search }: any = PropsSearch((state) => state);
 
   const [user, setUser] = useState<any>();
   const [current, setCurrent] = useState<any>();
@@ -31,9 +40,13 @@ function NavBar({}: Props) {
   const [fresh, setFresh] = useState<number>(0);
   const [scroll, setScroll] = useState<number>(10);
   const [windowWidth, setWindowWidth] = useState<number>(0);
+  const [inputValue, setInputValue] = useState<string>("");
+
+  const [searchValue, setSearchValue] = useState("");
 
   const { logout } = useAuthStore((state: any) => state);
   const router = useRouter();
+  const [findForm]: any = Form.useForm();
 
   useEffect(() => {
     const handleResize = () => {
@@ -71,36 +84,31 @@ function NavBar({}: Props) {
   }, [fresh]);
 
   useEffect(() => {
-    if (auth) {
-      axios
-        .get(`${URL_ENV}/customers/${auth?.payload?._id}`)
-        .then((res: any) => {
-          setUser(res.data.result);
-        })
-        .catch((err) => console.log(err));
-    } else {
-    }
-  }, [auth, auth?.payload?._id]);
+    axios
+      .get(`${URL_ENV}/customers/${auth?.payload?._id}`)
+      .then((res: any) => {
+        setUser(res.data.result);
+      })
+      .catch((err) => console.log(err));
+  }, [auth?.payload?._id]);
 
   const handleNavigation = (path: any) => {
     // router.reload();
     router.push(path);
   };
 
-  const onSearch = async (value: any) => {
-    console.log("value: ", value);
-    const data = await axios
-      .get(`${URL_ENV}/products?productName=${value}`)
-      .then((response) => {
-        return response.data.results;
-      });
-
-    if (typeof value !== "undefined") {
-      setFindProduct(data);
-      router.push(`/products/${value}`);
-      setFresh((pre) => pre + 1);
-    }
+  const handleFind = (value: any) => {
+    search(value);
+    // setInputValue("");
+    findForm.resetFields();
+    router.push(`/searchpage`);
   };
+
+  const handleReset = () => {
+    setSearchValue("");
+  };
+  ////////////////////////////////////////////////search///////////////////////////
+
   const itemsAccount = [
     {
       key: "information",
@@ -137,7 +145,7 @@ function NavBar({}: Props) {
 
   return (
     <>
-      <div className={scroll > 150 ? Style.container : Style.contaier__Scroll}>
+      <div className={scroll > 60 ? Style.container : Style.contaier__Scroll}>
         <div>
           <ul className={`${Style.listTop}`}>
             <li
@@ -182,8 +190,8 @@ function NavBar({}: Props) {
                         overlayStyle={{ zIndex: 10000 }}
                         overlay={
                           <Menu>
-                            {itemsCart.length > 0 &&
-                              itemsCart.map((item: any) => (
+                            {itemsCart?.length > 0 &&
+                              itemsCart?.map((item: any) => (
                                 <Menu.Item key={item.product?._id}>
                                   <div className="d-flex justify-content-between">
                                     <div className="w-75 text-truncate py-3">
@@ -198,7 +206,7 @@ function NavBar({}: Props) {
                                     </div>
 
                                     <div className="py-3">
-                                      {item.product?.price.toLocaleString(
+                                      {item.product?.price?.toLocaleString(
                                         "vi-VN",
                                         {
                                           style: "currency",
@@ -214,9 +222,9 @@ function NavBar({}: Props) {
                         className="d-flex"
                       >
                         <Badge
-                          count={itemsCart.length}
+                          count={itemsCart?.length}
                           className={
-                            scroll > 150
+                            scroll > 60
                               ? `d-flex ${Style.icon__scroll}`
                               : `d-flex ${Style.icon}`
                           }
@@ -240,7 +248,7 @@ function NavBar({}: Props) {
                       <Badge
                         count={itemsCart.length}
                         className={
-                          scroll > 150
+                          scroll > 60
                             ? `d-flex ${Style.icon__scroll}`
                             : `d-flex ${Style.icon}`
                         }
@@ -264,6 +272,7 @@ function NavBar({}: Props) {
                     {" "}
                     <Dropdown
                       overlayStyle={{ zIndex: 10000 }}
+                      trigger={windowWidth < 900 ? ["click"] : ["hover"]}
                       overlay={
                         <Menu>
                           {itemsAccount.length > 0 &&
@@ -276,7 +285,7 @@ function NavBar({}: Props) {
                     >
                       <Badge
                         className={
-                          scroll > 150
+                          scroll > 60
                             ? `d-flex ${Style.icon__scroll}`
                             : `d-flex ${Style.icon}`
                         }
@@ -325,43 +334,40 @@ function NavBar({}: Props) {
         <div className={Style.menuAnt}>
           <Menu
             mode="horizontal"
-            className={scroll > 150 ? Style.lengths : Style.length__Scroll}
+            className={scroll > 60 ? Style.lengths : Style.length__Scroll}
             selectedKeys={[current]}
           >
             <Menu.Item
               key="products"
               onClick={() => handleNavigation("/products")}
             >
-              Sản phẩm
+              Các sản phẩm
             </Menu.Item>
-            <Menu.Item key="collection">Bộ sưu tập </Menu.Item>
-            <Menu.Item key="brand">Thương hiệu</Menu.Item>
-            <Menu.Item key="contact ">Liên hệ</Menu.Item>
+            <Menu.Item key="DongHo" onClick={() => handleNavigation("/dongho")}>
+              Đồng hồ{" "}
+            </Menu.Item>
+            <Menu.Item
+              key="brand"
+              onClick={() => handleNavigation("/thuonghieu")}
+            >
+              Thương hiệu
+            </Menu.Item>
+            <Menu.Item
+              key="contact "
+              onClick={() => handleNavigation("/lienhe")}
+            >
+              Liên hệ
+            </Menu.Item>
           </Menu>
 
-          <Select
-            dropdownMatchSelectWidth={false}
-            dropdownStyle={{
-              position: "fixed",
-              top: scroll > 150 ? 140 : 130,
-              width: 300,
-            }}
-            allowClear
-            className={scroll > 150 ? `${Style.input} ` : Style.input__Scroll}
-            placeholder="Search"
-            optionFilterProp="children"
-            onChange={onSearch}
-            showSearch
-            filterOption={(input, option) =>
-              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
-            }
-            options={findProduct.map((item: any, index: any) => {
-              return {
-                label: `${item.name}`,
-                value: item._id,
-              };
-            })}
-          />
+          <Form className="my-2" form={findForm}>
+            <Search
+              placeholder="Nhập sản phẩm ..."
+              onSearch={handleFind}
+              style={{ width: 200 }}
+              allowClear
+            />
+          </Form>
         </div>
       </div>
     </>
@@ -369,3 +375,14 @@ function NavBar({}: Props) {
 }
 
 export default NavBar;
+
+export async function getStaticProps() {
+  const data = await axios.get(`${URL_ENV}/products`).then((response) => {
+    return response.data;
+  });
+  return {
+    props: {
+      data,
+    },
+  };
+}

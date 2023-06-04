@@ -7,9 +7,7 @@
     display: none;
 }
 
-.col2{
-    background: rga(245,245,245); 
-}
+
 .list{
     margin: 5% 5%;
     display: flex;
@@ -54,7 +52,6 @@
     height: 240px;
     
 }
-
 .name{
     position: absolute;
     top: 60%;
@@ -72,14 +69,11 @@
     
 }
 
-.title{
-    background-image: url(banner-20230307T065108Z-001_1200x450-cta.jpg);
-    background-size: cover;
-    height: 230px;
-}
+
+
+  
 @media screen and (max-width: 720px){
     .title{
-        
         background: none ;   
         height: 10px;
     }
@@ -121,11 +115,7 @@
     .list{
         display: contents;
     }
-    .col2{
-        border-right: 1px solid lightskyblue;
-        background: rgb(251, 253, 253);
-        display: none;
-    }
+   
     
 }
 
@@ -153,9 +143,5 @@
     .list{
         display: contents;
     }
-    .col2{
-        border-right: 1px solid lightskyblue;
-        background: rgb(251, 253, 253);
-        display: none;
-    }
+    
 }

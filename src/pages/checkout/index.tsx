@@ -36,7 +36,7 @@ const CheckoutPayment = (props: Props) => {
   // const handleChangePayMethod = (value: any) => {
   //   setPayMethod(value);
   // };
-  const { items } = useCartStore((state: any) => state);
+  const { itemsCheckout } = useCartStore((state: any) => state);
   const { auth }: any = useAuthStore((state: any) => state);
   useEffect(() => {
     const fetchData = async () => {
@@ -136,7 +136,7 @@ const CheckoutPayment = (props: Props) => {
     orderData.description = values.description;
     orderData.shippingAddress = values.address;
     orderData.status = "WAITING";
-    orderData.orderDetails = items.map((item: any) => ({
+    orderData.orderDetails = itemsCheckout.map((item: any) => ({
       productId: item.product._id,
       quantity: item.quantity,
     }));
@@ -177,7 +177,7 @@ const CheckoutPayment = (props: Props) => {
     if (payMethod === "momo") {
       orderData.paymentType = "MOMO";
 
-      const amount = items
+      const amount = itemsCheckout
         .map((item: any) => item.product.price * item.quantity)
         .reduce((accumulator: any, subtotal: any) => accumulator + subtotal, 0);
 
@@ -216,7 +216,7 @@ const CheckoutPayment = (props: Props) => {
     if (payMethod === "vnpay") {
       orderData.paymentType = "VNPAY";
 
-      const amount = items
+      const amount = itemsCheckout
         .map((item: any) => item.product.price * item.quantity)
         .reduce((accumulator: any, subtotal: any) => accumulator + subtotal, 0);
 
@@ -262,10 +262,10 @@ const CheckoutPayment = (props: Props) => {
       return null;
     }
 
-    if (items) {
+    if (itemsCheckout) {
       return (
         <>
-          {items.map((i: any, index: any) => {
+          {itemsCheckout.map((i: any, index: any) => {
             return (
               <React.Fragment key={i.product.id}>
                 <div className="d-flex justify-content-between">
@@ -288,8 +288,8 @@ const CheckoutPayment = (props: Props) => {
           <div className="d-flex justify-content-between">
             <strong>Tổng</strong>
             <strong>
-              {items.length > 0
-                ? items
+              {itemsCheckout.length > 0
+                ? itemsCheckout
                     .map((item: any) => item.product.price * item.quantity)
                     .reduce(
                       (accumulator: any, subtotal: any) =>

@@ -19,8 +19,9 @@ import {
   FloatButton,
 } from "antd";
 import { useCartStore } from "@/hook/useCountStore";
+import Hotdeal from "../../compenents/Mainpage/Topmonth/Topmonth";
 
-// import { useAuthStore } from "../../hook/useAuthStore";
+import { useAuthStore } from "../../hook/useAuthStore";
 // import { useCartStore } from "@/hook/useCountStore";
 
 type Props = {
@@ -59,20 +60,7 @@ function Products({ products, categories, supplier }: Props) {
     increase,
   } = useCartStore((state: any) => state);
 
-  const [scroll, setScroll] = useState<number>(10);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setScroll(window.scrollY);
-    };
-
-    handleResize(); // Set initial window width
-    window.addEventListener("scroll", handleResize);
-
-    return () => {
-      window.removeEventListener("scroll", handleResize);
-    };
-  }, []);
+  const { auth }: any = useAuthStore((state) => state);
 
   //CALL API PRODUCT FILLTER
   const queryParams = [
@@ -107,26 +95,32 @@ function Products({ products, categories, supplier }: Props) {
   };
   const handleDataChange = (value: any) => {
     setCategoryId(value);
+    // setFetchData((pre) => pre + 1);
   };
 
   const handleChangeSupplier = (value: any) => {
     setSupplierId(value);
+    // setFetchData((pre) => pre + 1);
   };
 
   const handleToPrice = (value: any) => {
     setToPrice(value);
+    // setFetchData((pre) => pre + 1);
   };
   const handleFromPrice = (value: any) => {
     setFromPrice(value);
+    // setFetchData((pre) => pre + 1);
   };
 
   const handleFromDiscount = (value: any) => {
     // console.log(value);
     setFromDiscount(value);
+    // setFetchData((pre) => pre + 1);
   };
 
   const handleToDiscount = (value: any) => {
     setToDiscount(value);
+    // setFetchData((pre) => pre + 1);
   };
 
   // console.log("data: ", data);
@@ -161,61 +155,68 @@ function Products({ products, categories, supplier }: Props) {
                 data?.map((items: any, index: any) => {
                   return (
                     <li key={index} className={` ${Style.items}`}>
-                      <div className="d-flex justify-content-center align-items-center pt-3">
+                      <div
+                        className={`d-flex justify-content-center align-items-center pt-3 `}
+                      >
                         <Image
                           src={`${URL_ENV}/${items.imageUrl}`}
                           alt="Description of the image"
                           width={200}
                           height={200}
+                          className={` ${Style.imgItems}`}
                           onClick={() => {
                             handleClick(`/products/${items._id}`);
                           }}
                         ></Image>
                       </div>
-                      <div className="d-flex justify-content-center align-items-center">
+                      <div
+                        className={`d-flex justify-content-center align-items-center`}
+                      >
                         <div className={Style.name}>{items.name}</div>
                         <div className={Style.price}>
-                          <div>
-                            {items.price.toLocaleString("vi-VN", {
-                              style: "currency",
-                              currency: "VND",
-                            })}
-                          </div>
+                          <div>{items.price}đ</div>
                         </div>
                         <div className={Style.button}>
                           <Button
                             onClick={() => {
-                              const productId = items?._id;
-
-                              const productExists = itemsCart.some(
-                                (item: any) => item.product._id === productId
-                              );
-                              console.log(
-                                "««««« productExists »»»»»",
-                                productExists
-                              );
-                              if (productExists === true) {
-                                increase(productId);
-                                message.success(
-                                  {
-                                    content: "Thêm 1 sản phẩm vào giỏ hàng!",
-                                    style: {
-                                      marginTop: 130,
-                                    },
-                                  },
+                              if (auth === null) {
+                                router.push("/login");
+                                message.warning(
+                                  "Vui lòng đăng nhập để thêm vào giỏ hàng!!",
                                   1.5
                                 );
                               } else {
-                                add({ product: items, quantity: 1 });
-                                message.success(
-                                  {
-                                    content: "Đã thêm sản phẩm vào giỏ hàng!",
-                                    style: {
-                                      marginTop: 130,
-                                    },
-                                  },
-                                  1.5
+                                const productId = items?._id;
+                                const productExists = itemsCart.some(
+                                  (item: any) => item.product._id === productId
                                 );
+                                console.log(
+                                  "««««« productExists »»»»»",
+                                  productExists
+                                );
+                                if (productExists === true) {
+                                  increase(productId);
+                                  message.success(
+                                    {
+                                      content: "Thêm 1 sản phẩm vào giỏ hàng!",
+                                      style: {
+                                        marginTop: 130,
+                                      },
+                                    },
+                                    1.5
+                                  );
+                                } else {
+                                  add({ product: items, quantity: 1 });
+                                  message.success(
+                                    {
+                                      content: "Đã thêm sản phẩm vào giỏ hàng!",
+                                      style: {
+                                        marginTop: 130,
+                                      },
+                                    },
+                                    1.5
+                                  );
+                                }
                               }
                             }}
                           >
@@ -228,6 +229,10 @@ function Products({ products, categories, supplier }: Props) {
                 })}
             </ul>
           </div>
+          <div className="mb-5">
+            <h3>Sản phẩm nổi bật</h3>
+            <Hotdeal />
+          </div>
         </Col>
         <Col span={4} pull={18} className={`${Style.col2} `}>
           <Affix offsetTop={95}>
@@ -236,13 +241,6 @@ function Products({ products, categories, supplier }: Props) {
                 <Space wrap className="d-flex flex-column ">
                   <h5>Danh mục sản phẩm</h5>
                   <Select
-                    dropdownMatchSelectWidth={false}
-                    dropdownStyle={{
-                      position: "fixed",
-                      top: scroll > 90 ? 210 : 245,
-
-                      width: 300,
-                    }}
                     allowClear
                     autoClearSearchValue={!categoryId ? true : false}
                     defaultValue={"None"}
@@ -256,13 +254,6 @@ function Products({ products, categories, supplier }: Props) {
 
                   <h5>Hãng sản phẩm</h5>
                   <Select
-                    dropdownMatchSelectWidth={false}
-                    dropdownStyle={{
-                      position: "fixed",
-                      top: scroll > 90 ? 290 : 325,
-
-                      width: 300,
-                    }}
                     allowClear
                     autoClearSearchValue={!supplierId ? true : false}
                     defaultValue={"None"}
@@ -286,7 +277,7 @@ function Products({ products, categories, supplier }: Props) {
                     <InputNumber
                       defaultValue={"0"}
                       placeholder="Enter to"
-                      max={1000}
+                      // max={}
                       onChange={handleToPrice}
                     />
                   </div>
@@ -308,14 +299,8 @@ function Products({ products, categories, supplier }: Props) {
                     />
                   </div>
                   <div className="d-flex ">
-                    <Button type="primary" onClick={handleSubmit}>
-                      Lọc sản phẩm
-                    </Button>
-                    <Button
-                      type="primary"
-                      onClick={handleClearSubmit}
-                      className="ms-1"
-                    >
+                    <Button onClick={handleSubmit}>Lọc sản phẩm</Button>
+                    <Button onClick={handleClearSubmit} className="ms-1">
                       Xóa lọc
                     </Button>
                   </div>
@@ -341,7 +326,6 @@ function Products({ products, categories, supplier }: Props) {
             placement="left"
             onClose={onClose}
             open={open}
-            style={{ marginTop: scroll > 150 ? 130 : 0 }}
           >
             <Space wrap>
               <h5>Danh mục sản phẩm</h5>
