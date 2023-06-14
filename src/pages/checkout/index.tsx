@@ -27,6 +27,7 @@ const CheckoutPayment = (props: Props) => {
   const URL_ENV = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:9000";
   const router = useRouter();
 
+  const { auth } = useAuthStore((state: any) => state);
   const { saveOrderId } = useSaveOrderId((state: any) => state);
   const [cities, setCities] = useState<any>([]);
   const [districts, setDistricts] = useState<any>([]);
@@ -39,7 +40,6 @@ const CheckoutPayment = (props: Props) => {
   //   setPayMethod(value);
   // };
   const { itemsCheckout } = useCartStore((state: any) => state);
-  const { auth }: any = useAuthStore((state: any) => state);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -322,213 +322,217 @@ const CheckoutPayment = (props: Props) => {
 
         <CheckoutMethod />
       </div>
-
-      <div className="container ">
-        <Row>
-          <Col xs={24} xl={10} className="px-3 py-2 rounded-start ">
-            {" "}
-            <Card
-              className="border border-primary"
-              title="Thông tin thanh toán"
-              style={{ width: "100%" }}
-            >
-              <div className="d-flex justify-content-between border-bottom">
-                <strong>Sản phẩm</strong>
-                <strong>Tạm tính</strong>
-              </div>
-              {renderOrders()}
-              <Divider></Divider>
-
-              <Radio.Group defaultValue={payMethod}>
-                <Space
-                  direction="vertical"
-                  onChange={(e: any) => setPayMethod(e?.target?.value)}
-                >
-                  <Radio
-                    className="d-flex justify-content-around border-bottom"
-                    value="shipCod"
-                  >
-                    <Space>
-                      <span>Shipcod</span>
-                      <span>
-                        <Image
-                          width={25}
-                          height={25}
-                          src={
-                            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKbZ0bQHF9cNGzFlD8gAddwu0a15l43bcWyg&usqp=CAU"
-                          }
-                          alt={""}
-                        />
-                      </span>
-                    </Space>
-                  </Radio>
-                  <Radio
-                    className="d-flex justify-content-around border-bottom"
-                    value="momo"
-                  >
-                    <Space>
-                      <span>Momo</span>
-                      <span>
-                        <Image
-                          width={25}
-                          height={25}
-                          src={
-                            "https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png?20201011055544"
-                          }
-                          alt={""}
-                        />
-                      </span>
-                    </Space>
-                  </Radio>
-                  <Radio
-                    className="d-flex justify-content-around border-bottom"
-                    value="vnpay"
-                  >
-                    <Space>
-                      <span>Vnpay</span>
-                      <span>
-                        <Image
-                          width={25}
-                          height={25}
-                          src={
-                            "https://vivnpay.vn/assets/landing/bat-nhip-tet/0701/29.png"
-                          }
-                          alt={""}
-                        />
-                      </span>
-                    </Space>
-                  </Radio>
-                </Space>
-              </Radio.Group>
-            </Card>
-          </Col>
-
-          <Col xs={24} xl={14} className="py-2 px-3 rounded-end ">
-            {" "}
-            <Card
-              className="border border-primary"
-              title="Đơn hàng của bạn"
-              style={{ width: "100%" }}
-            >
-              <Form
-                layout="vertical"
-                name="payForm"
-                onFinish={handlePaySubmit}
-                onFinishFailed={onFinishFailed}
-                autoComplete="off"
+      {auth?.payload !== undefined && (
+        <div className="container ">
+          <Row>
+            <Col xs={24} xl={10} className="px-3 py-2 rounded-start ">
+              {" "}
+              <Card
+                className="border border-primary"
+                title="Thông tin thanh toán"
+                style={{ width: "100%" }}
               >
-                <Row>
-                  <Col xs={24} xl={12}>
-                    {" "}
-                    <Form.Item
-                      label="Họ"
-                      name="firstName"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input your First Name!",
-                        },
-                      ]}
-                    >
-                      <Input style={{ width: "90%" }} />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} xl={12}>
-                    {" "}
-                    <Form.Item
-                      label="Tên"
-                      name="lastName"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input your Last Name!",
-                        },
-                      ]}
-                    >
-                      <Input style={{ width: "90%" }} />
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Form.Item
-                  label="Email"
-                  name="email"
-                  rules={[
-                    { required: true, message: "Please input your email!" },
-                    { type: "email" },
-                  ]}
-                >
-                  <Input />
-                </Form.Item>
-                <Form.Item
-                  label="Điện thoại"
-                  name="phoneNumber"
-                  rules={[
-                    { required: true, message: "Please input your phone!" },
-                  ]}
-                >
-                  <Input />
-                </Form.Item>
+                <div className="d-flex justify-content-between border-bottom">
+                  <strong>Sản phẩm</strong>
+                  <strong>Tạm tính</strong>
+                </div>
+                {renderOrders()}
+                <Divider></Divider>
 
-                <Form.Item
-                  label="Tỉnh Thành"
-                  name="city"
-                  rules={[
-                    { required: true, message: "Please select your city!" },
-                  ]}
-                >
-                  <Select
-                    placeholder="Chọn tỉnh thành"
-                    onChange={(cityId) => handleCityChange(cityId)}
+                <Radio.Group defaultValue={payMethod}>
+                  <Space
+                    direction="vertical"
+                    onChange={(e: any) => setPayMethod(e?.target?.value)}
                   >
-                    {renderCity()}
-                  </Select>
-                </Form.Item>
-                <Form.Item
-                  label="Quận/ Huyện"
-                  name="district"
-                  rules={[
-                    { required: true, message: "Please select your district!" },
-                  ]}
-                >
-                  <Select
-                    placeholder="Chọn quận huyện"
-                    onChange={handleDistrictChange}
-                  >
-                    {renderDistrict()}
-                  </Select>
-                </Form.Item>
-                <Form.Item
-                  label="Phường/ Xã"
-                  name="ward"
-                  rules={[
-                    { required: true, message: "Please select your ward!" },
-                  ]}
-                >
-                  <Select placeholder="Chọn phường xã">{renderWard()}</Select>
-                </Form.Item>
-                <Form.Item
-                  label="Địa chỉ"
-                  name="address"
-                  rules={[
-                    { required: true, message: "Please input your address!" },
-                  ]}
-                >
-                  <Input />
-                </Form.Item>
+                    <Radio
+                      className="d-flex justify-content-around border-bottom"
+                      value="shipCod"
+                    >
+                      <Space>
+                        <span>Shipcod</span>
+                        <span>
+                          <Image
+                            width={25}
+                            height={25}
+                            src={
+                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKbZ0bQHF9cNGzFlD8gAddwu0a15l43bcWyg&usqp=CAU"
+                            }
+                            alt={""}
+                          />
+                        </span>
+                      </Space>
+                    </Radio>
+                    <Radio
+                      className="d-flex justify-content-around border-bottom"
+                      value="momo"
+                    >
+                      <Space>
+                        <span>Momo</span>
+                        <span>
+                          <Image
+                            width={25}
+                            height={25}
+                            src={
+                              "https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png?20201011055544"
+                            }
+                            alt={""}
+                          />
+                        </span>
+                      </Space>
+                    </Radio>
+                    <Radio
+                      className="d-flex justify-content-around border-bottom"
+                      value="vnpay"
+                    >
+                      <Space>
+                        <span>Vnpay</span>
+                        <span>
+                          <Image
+                            width={25}
+                            height={25}
+                            src={
+                              "https://vivnpay.vn/assets/landing/bat-nhip-tet/0701/29.png"
+                            }
+                            alt={""}
+                          />
+                        </span>
+                      </Space>
+                    </Radio>
+                  </Space>
+                </Radio.Group>
+              </Card>
+            </Col>
 
-                <Form.Item label="Ghi chú" name="description">
-                  <Input />
-                </Form.Item>
-                <Form.Item wrapperCol={{ offset: 16, span: 16 }}>
-                  <Button type="primary" htmlType="submit">
-                    Thanh toán
-                  </Button>
-                </Form.Item>
-              </Form>
-            </Card>
-          </Col>
-        </Row>
-      </div>
+            <Col xs={24} xl={14} className="py-2 px-3 rounded-end ">
+              {" "}
+              <Card
+                className="border border-primary"
+                title="Đơn hàng của bạn"
+                style={{ width: "100%" }}
+              >
+                <Form
+                  layout="vertical"
+                  name="payForm"
+                  onFinish={handlePaySubmit}
+                  onFinishFailed={onFinishFailed}
+                  autoComplete="off"
+                >
+                  <Row>
+                    <Col xs={24} xl={12}>
+                      {" "}
+                      <Form.Item
+                        label="Họ"
+                        name="firstName"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your First Name!",
+                          },
+                        ]}
+                      >
+                        <Input style={{ width: "90%" }} />
+                      </Form.Item>
+                    </Col>
+                    <Col xs={24} xl={12}>
+                      {" "}
+                      <Form.Item
+                        label="Tên"
+                        name="lastName"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your Last Name!",
+                          },
+                        ]}
+                      >
+                        <Input style={{ width: "90%" }} />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  <Form.Item
+                    label="Email"
+                    name="email"
+                    rules={[
+                      { required: true, message: "Please input your email!" },
+                      { type: "email" },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                  <Form.Item
+                    label="Điện thoại"
+                    name="phoneNumber"
+                    rules={[
+                      { required: true, message: "Please input your phone!" },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Tỉnh Thành"
+                    name="city"
+                    rules={[
+                      { required: true, message: "Please select your city!" },
+                    ]}
+                  >
+                    <Select
+                      placeholder="Chọn tỉnh thành"
+                      onChange={(cityId) => handleCityChange(cityId)}
+                    >
+                      {renderCity()}
+                    </Select>
+                  </Form.Item>
+                  <Form.Item
+                    label="Quận/ Huyện"
+                    name="district"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please select your district!",
+                      },
+                    ]}
+                  >
+                    <Select
+                      placeholder="Chọn quận huyện"
+                      onChange={handleDistrictChange}
+                    >
+                      {renderDistrict()}
+                    </Select>
+                  </Form.Item>
+                  <Form.Item
+                    label="Phường/ Xã"
+                    name="ward"
+                    rules={[
+                      { required: true, message: "Please select your ward!" },
+                    ]}
+                  >
+                    <Select placeholder="Chọn phường xã">{renderWard()}</Select>
+                  </Form.Item>
+                  <Form.Item
+                    label="Địa chỉ"
+                    name="address"
+                    rules={[
+                      { required: true, message: "Please input your address!" },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+
+                  <Form.Item label="Ghi chú" name="description">
+                    <Input />
+                  </Form.Item>
+                  <Form.Item wrapperCol={{ offset: 16, span: 16 }}>
+                    <Button type="primary" htmlType="submit">
+                      Thanh toán
+                    </Button>
+                  </Form.Item>
+                </Form>
+              </Card>
+            </Col>
+          </Row>
+        </div>
+      )}
     </>
   );
 };

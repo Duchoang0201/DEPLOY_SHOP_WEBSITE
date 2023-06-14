@@ -40,21 +40,17 @@ export default function CounterApp() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
   return (
     <div>
-      {auth?.payload ? (
-        <div style={{ background: "rgb(245,245,245)" }}>
-          <h4 className="text-center py-4">Giỏ hàng của bạn</h4>
-        </div>
-      ) : (
-        <div style={{ background: "rgb(245,245,245)" }}>
-          <h4 className="text-center py-4">
-            Vui lòng đăng nhập để truy cập giỏ hàng
-          </h4>
-        </div>
-      )}
-
-      {auth?.payload && (
+      <div style={{ background: "rgb(245,245,245)" }}>
+        <h4 className="text-center py-4">
+          {auth?.payload !== undefined
+            ? `Giỏ hàng của bạn`
+            : `Vui lòng đăng nhập để truy cập giỏ hàng`}
+        </h4>
+      </div>
+      {auth?.payload !== undefined && (
         <Card className="bg-body-secondary" loading={loading}>
           <ShopApp />
           <Affix offsetBottom={10}>
@@ -88,37 +84,28 @@ export default function CounterApp() {
                       zIndex: 100000000000,
                     }}
                     placement="topRight"
-                    menu={{
-                      items: itemsCheckout.map((item: any, index: number) => ({
-                        key: index.toString(),
-                        label: (
-                          <div
-                            onClick={(e) => e.preventDefault()}
-                            className="d-flex justify-content-between  "
-                          >
-                            <div className="w-75 text-truncate py-3">
-                              <span> {item.product?.name}</span>
+                    overlay={
+                      <Menu>
+                        {itemsCheckout.map((item: any, index: number) => (
+                          <Menu.Item key={index}>
+                            <div
+                              onClick={(e) => e.preventDefault()}
+                              className="d-flex justify-content-between"
+                            >
+                              <div className="w-75 text-truncate py-3">
+                                <span>{item.product?.name}</span>
+                              </div>
+                              <div className="py-3">
+                                {item.product?.price?.toLocaleString("vi-VN", {
+                                  style: "currency",
+                                  currency: "VND",
+                                })}
+                              </div>
                             </div>
-
-                            <div className="py-3">
-                              {item.product?.price?.toLocaleString("vi-VN", {
-                                style: "currency",
-                                currency: "VND",
-                              })}
-                            </div>
-                          </div>
-                        ),
-                        icon: (
-                          <Badge color="blue" count={item.quantity}>
-                            <Avatar
-                              shape="square"
-                              size="large"
-                              src={`${URL_ENV}${item.product?.imageUrl}`}
-                            />
-                          </Badge>
-                        ),
-                      })),
-                    }}
+                          </Menu.Item>
+                        ))}
+                      </Menu>
+                    }
                   >
                     <div className="text-center">
                       <Badge
