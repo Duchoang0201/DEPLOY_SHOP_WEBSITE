@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Avatar, Badge, Dropdown, Space, Button } from "antd";
+import { Avatar, Badge, Dropdown, Space, Button, MenuProps } from "antd";
 import { Menu, Input, Form } from "antd";
 import Style from "./Navbar.module.css";
 import { useRouter } from "next/router";
@@ -19,15 +19,7 @@ import {
 const { Search } = Input;
 import { useCartStore } from "../../hook/useCountStore";
 
-type Props = {
-  data: any;
-};
 const URL_ENV = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:9000";
-// const API_URL_Product = `${URL_ENV}/products/${}`;
-
-/////////////search <ant design> ///////////////////////////////
-
-////////////////////////////////////////////////
 
 function NavBar() {
   const { auth }: any = useAuthStore((state: any) => state);
@@ -162,7 +154,7 @@ function NavBar() {
             <li
               className={Style.listTopItem2}
               onClick={() => {
-                handleNavigation("/Branch");
+                handleNavigation("/branch");
               }}
             >
               <div className="mb-2">
@@ -188,37 +180,37 @@ function NavBar() {
                     <div>
                       <Dropdown
                         overlayStyle={{ zIndex: 10000 }}
-                        overlay={
-                          <Menu>
-                            {itemsCart?.length > 0 &&
-                              itemsCart?.map((item: any) => (
-                                <Menu.Item key={item.product?._id}>
-                                  <div className="d-flex justify-content-between">
-                                    <div className="w-75 text-truncate py-3">
-                                      <Badge color="blue" count={item.quantity}>
-                                        <Avatar
-                                          shape="square"
-                                          size="large"
-                                          src={`${URL_ENV}${item.product?.imageUrl}`}
-                                        />
-                                      </Badge>
-                                      <span> {item.product?.name}</span>
-                                    </div>
+                        menu={{
+                          items: itemsCart.map((item: any, index: number) => ({
+                            key: index.toString(),
+                            label: (
+                              <div className="d-flex justify-content-between">
+                                <div className="w-75 text-truncate py-3">
+                                  <span> {item.product?.name}</span>
+                                </div>
 
-                                    <div className="py-3">
-                                      {item.product?.price?.toLocaleString(
-                                        "vi-VN",
-                                        {
-                                          style: "currency",
-                                          currency: "VND",
-                                        }
-                                      )}
-                                    </div>
-                                  </div>
-                                </Menu.Item>
-                              ))}
-                          </Menu>
-                        }
+                                <div className="py-3">
+                                  {item.product?.price?.toLocaleString(
+                                    "vi-VN",
+                                    {
+                                      style: "currency",
+                                      currency: "VND",
+                                    }
+                                  )}
+                                </div>
+                              </div>
+                            ),
+                            icon: (
+                              <Badge color="blue" count={item.quantity}>
+                                <Avatar
+                                  shape="square"
+                                  size="large"
+                                  src={`${URL_ENV}${item.product?.imageUrl}`}
+                                />
+                              </Badge>
+                            ),
+                          })),
+                        }}
                         className="d-flex"
                       >
                         <Badge
@@ -261,26 +253,14 @@ function NavBar() {
                     </div>
                   </li>
                 )}
-                <li
-                  className={Style.listTopItem1}
-                  // onClick={() => {
-                  //   handleNavigation("/account");
-                  // }}
-                >
+                <li className={Style.listTopItem1}>
                   {" "}
                   <div>
                     {" "}
                     <Dropdown
                       overlayStyle={{ zIndex: 10000 }}
                       trigger={windowWidth < 900 ? ["click"] : ["hover"]}
-                      overlay={
-                        <Menu>
-                          {itemsAccount.length > 0 &&
-                            itemsAccount.map((item) => (
-                              <Menu.Item key={item.key}>{item.label}</Menu.Item>
-                            ))}
-                        </Menu>
-                      }
+                      menu={{ items: itemsAccount }}
                       className="d-flex"
                     >
                       <Badge
