@@ -13,11 +13,14 @@ import {
 } from "antd";
 import CreateOrder from "@/compenents/ShopApp/components/Order/CreateOrder";
 import { useAuthStore } from "@/hook/useAuthStore";
+import axios from "axios";
 const URL_ENV = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:9000";
 
 export default function CounterApp() {
   const [loading, setLoading] = useState(true);
   const { auth } = useAuthStore((state: any) => state);
+  const [user, setUser] = useState<any>();
+
   const { selectAllCheck, removeAllCheck, itemsCheckout } = useCartStore(
     (state: any) => state
   );
@@ -27,6 +30,25 @@ export default function CounterApp() {
     }, 1000);
   }, []);
   const [windowWidth, setWindowWidth] = useState<number>(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (auth?.payload?._id) {
+          const response = await axios.get(
+            `${URL_ENV}/customers/${auth?.payload?._id}`
+          );
+          setUser(response.data.result);
+        } else {
+          setUser(null);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, [auth?.payload._id]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -45,12 +67,12 @@ export default function CounterApp() {
     <div>
       <div style={{ background: "rgb(245,245,245)" }}>
         <h4 className="text-center py-4">
-          {auth?.payload !== undefined
+          {user?._id
             ? `Giỏ hàng của bạn`
             : `Vui lòng đăng nhập để truy cập giỏ hàng`}
         </h4>
       </div>
-      {auth?.payload !== undefined && (
+      {user?._id && (
         <Card className="bg-body-secondary" loading={loading}>
           <ShopApp />
           <Affix offsetBottom={10}>

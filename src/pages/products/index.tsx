@@ -86,8 +86,6 @@ function Products({ products, categories, supplier }: Props) {
   const [scroll, setScroll] = useState<number>(10);
 
   const slideCurrent = (value: any) => {
-    console.log(pages);
-    console.log("numberpage: ", value);
     setSkip(value * 10 - 10);
     setFetchData((prev) => prev + 1);
   };
@@ -106,8 +104,6 @@ function Products({ products, categories, supplier }: Props) {
   }, []);
 
   useEffect(() => {
-    console.log(limit);
-    console.log(queryParams);
     axios.get(`${API_URL_Product}?${queryParams}`).then((respones: any) => {
       // console.log(respones.data.results);
       setData(respones.data.results);
@@ -233,10 +229,7 @@ function Products({ products, categories, supplier }: Props) {
                                 const productExists = itemsCart.some(
                                   (item: any) => item.product._id === productId
                                 );
-                                console.log(
-                                  "««««« productExists »»»»»",
-                                  productExists
-                                );
+
                                 if (productExists === true) {
                                   increase(productId);
                                   message.success(

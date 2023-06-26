@@ -4,7 +4,6 @@ import {
   Button,
   Card,
   Col,
-  Collapse,
   Divider,
   Form,
   Input,
@@ -12,6 +11,7 @@ import {
   Row,
   Select,
   Space,
+  message,
 } from "antd";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useCartStore } from "@/hook/useCountStore";
@@ -20,14 +20,13 @@ import Image from "next/image";
 import CheckoutMethod from "@/compenents/Checkout/CheckoutMethod";
 import { useRouter } from "next/router";
 import { useSaveOrderId } from "@/hook/useSaveOrderId";
+import CheckoutPay from "@/compenents/Checkout/CheckoutPay";
 const { Option } = Select;
-type Props = {};
+const URL_ENV = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:9000";
 
-const CheckoutPayment = (props: Props) => {
-  const URL_ENV = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:9000";
+const CheckoutPayment = () => {
   const router = useRouter();
 
-  const { auth } = useAuthStore((state: any) => state);
   const { saveOrderId } = useSaveOrderId((state: any) => state);
   const [cities, setCities] = useState<any>([]);
   const [districts, setDistricts] = useState<any>([]);
@@ -36,10 +35,18 @@ const CheckoutPayment = (props: Props) => {
   const [payMethod, setPayMethod] = useState<any>("shipCod");
   const [position, setPosition] = useState<any>();
 
-  // const handleChangePayMethod = (value: any) => {
-  //   setPayMethod(value);
-  // };
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>();
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, []);
+
   const { itemsCheckout } = useCartStore((state: any) => state);
+  const { auth } = useAuthStore((state: any) => state);
+
+  //Lấy danh sách tỉnh thành
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -54,6 +61,8 @@ const CheckoutPayment = (props: Props) => {
 
     fetchData();
   }, []);
+
+  //Lấy vị trí
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -66,6 +75,24 @@ const CheckoutPayment = (props: Props) => {
 
     fetchData();
   }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (auth?.payload?._id) {
+          const response = await axios.get(
+            `${URL_ENV}/customers/${auth?.payload?._id}`
+          );
+          setUser(response.data.result);
+        } else {
+          setUser(null);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, [auth?.payload._id]);
 
   const renderCity = () => {
     return cities.map((city: any) => (
@@ -185,13 +212,10 @@ const CheckoutPayment = (props: Props) => {
         .reduce((accumulator: any, subtotal: any) => accumulator + subtotal, 0);
 
       const payPost = async () => {
+        const postOder: any = await axios.post(`${URL_ENV}/orders`, orderData);
         try {
-          const postOder: any = await axios.post(
-            `${URL_ENV}/orders`,
-            orderData
-          );
-
-          if (postOder) {
+          console.log("««««« postOder »»»»»", postOder);
+          if (postOder?.data?.oke === true) {
             //Change stock of product :
             const handleChangeStock = await axios
               .post(
@@ -213,6 +237,17 @@ const CheckoutPayment = (props: Props) => {
           }
         } catch (error) {
           console.log("««««« error »»»»»", error);
+          await axios.delete(
+            `${URL_ENV}/orders/${postOder?.data?.result?._id}`
+          );
+          message.error({
+            content:
+              "Momo chỉ cho phép thanh toán giá trị đơn hàng dưới 10 triệu đồng!!, vui lòng thay đổi cách thanh toán.",
+
+            style: {
+              marginTop: 130,
+            },
+          });
         }
       };
       payPost();
@@ -227,7 +262,7 @@ const CheckoutPayment = (props: Props) => {
       const payPost = async () => {
         try {
           const postOder = await axios.post(`${URL_ENV}/orders`, orderData);
-          if (postOder) {
+          if (postOder?.data?.oke === true) {
             const handleChangeStock = await axios
               .post(`${URL_ENV}/products/orderp/${postOder?.data?._id}/stock`)
               .then((response) => {
@@ -256,79 +291,85 @@ const CheckoutPayment = (props: Props) => {
     console.log("Failed:", errorInfo);
   };
 
-  const [isHydrated, setIsHydrated] = useState(false);
-  useEffect(() => {
-    setIsHydrated(true);
-  }, []);
-  const renderOrders = (): React.ReactNode => {
-    if (!isHydrated) {
-      // Server-side rendering
-      return null;
-    }
+  // const [isHydrated, setIsHydrated] = useState(false);
+  // useEffect(() => {
+  //   setIsHydrated(true);
+  // }, []);
+  // const renderOrders = (): React.ReactNode => {
+  //   if (!isHydrated) {
+  //     // Server-side rendering
+  //     return null;
+  //   }
 
-    if (itemsCheckout) {
-      return (
-        <>
-          {itemsCheckout.map((i: any, index: any) => {
-            return (
-              <React.Fragment key={i.product.id}>
-                <div className="d-flex justify-content-between">
-                  <div className="w-75">
-                    <span>{i.product.name}</span> x{" "}
-                    <span className="text-danger">{i.quantity}</span>
-                  </div>
-                  <span>
-                    {(i.product.price * i.quantity).toLocaleString("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    })}
-                  </span>
-                </div>
-                <Divider key={i.product.id}></Divider>
-              </React.Fragment>
-            );
-          })}
+  //   if (itemsCheckout) {
+  //     return (
+  //       <>
+  //         {itemsCheckout.map((i: any, index: any) => {
+  //           return (
+  //             <React.Fragment key={i.product._id}>
+  //               <div className="d-flex justify-content-between">
+  //                 <div className="w-75">
+  //                   <span>{i.product.name}</span> x{" "}
+  //                   <span className="text-danger">{i.quantity}</span>
+  //                 </div>
+  //                 <span>
+  //                   {(i.product.price * i.quantity).toLocaleString("vi-VN", {
+  //                     style: "currency",
+  //                     currency: "VND",
+  //                   })}
+  //                 </span>
+  //               </div>
+  //               <Divider></Divider>
+  //             </React.Fragment>
+  //           );
+  //         })}
 
-          <div className="d-flex justify-content-between">
-            <strong>Tổng</strong>
-            <strong>
-              {itemsCheckout.length > 0
-                ? itemsCheckout
-                    .map((item: any) => item.product.price * item.quantity)
-                    .reduce(
-                      (accumulator: any, subtotal: any) =>
-                        accumulator + subtotal,
-                      0
-                    )
-                    .toLocaleString("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    })
-                : 0}
-            </strong>
-          </div>
-        </>
-      );
-    }
-  };
+  //         <div className="d-flex justify-content-between">
+  //           <strong>Tổng</strong>
+  //           <strong>
+  //             {itemsCheckout.length > 0
+  //               ? itemsCheckout
+  //                   .map((item: any) => item.product.price * item.quantity)
+  //                   .reduce(
+  //                     (accumulator: any, subtotal: any) =>
+  //                       accumulator + subtotal,
+  //                     0
+  //                   )
+  //                   .toLocaleString("vi-VN", {
+  //                     style: "currency",
+  //                     currency: "VND",
+  //                   })
+  //               : 0}
+  //           </strong>
+  //         </div>
+  //       </>
+  //     );
+  //   }
+  // };
 
   return (
-    <>
+    <div>
       <div style={{ background: "rgb(245,245,245)" }}>
         <div className="container">
-          <h3 className=" py-2 text-center">Thủ tục thanh toán</h3>
+          <h4 className="text-center py-4">
+            {user?._id
+              ? `Thủ tục thanh toán`
+              : `Vui lòng đăng nhập để truy cập thanh toán!`}
+          </h4>
           <Divider orientation="left"> Phương thức thanh toán cho phép</Divider>
         </div>
 
         <CheckoutMethod />
       </div>
-      {auth?.payload !== undefined && (
+
+      {user?._id ? (
         <div className="container ">
           <Row>
             <Col xs={24} xl={10} className="px-3 py-2 rounded-start ">
               {" "}
               <Card
-                className="border border-primary"
+                loading={loading}
+                className="border border-dark-subtle"
                 title="Thông tin thanh toán"
                 style={{ width: "100%" }}
               >
@@ -336,7 +377,9 @@ const CheckoutPayment = (props: Props) => {
                   <strong>Sản phẩm</strong>
                   <strong>Tạm tính</strong>
                 </div>
-                {renderOrders()}
+                {/* {renderOrders()} */}
+
+                <CheckoutPay />
                 <Divider></Divider>
 
                 <Radio.Group defaultValue={payMethod}>
@@ -406,7 +449,8 @@ const CheckoutPayment = (props: Props) => {
             <Col xs={24} xl={14} className="py-2 px-3 rounded-end ">
               {" "}
               <Card
-                className="border border-primary"
+                loading={loading}
+                className="border border-dark-subtle"
                 title="Đơn hàng của bạn"
                 style={{ width: "100%" }}
               >
@@ -532,8 +576,10 @@ const CheckoutPayment = (props: Props) => {
             </Col>
           </Row>
         </div>
+      ) : (
+        <Divider>Vui lòng đăng nhập!!</Divider>
       )}
-    </>
+    </div>
   );
 };
 
