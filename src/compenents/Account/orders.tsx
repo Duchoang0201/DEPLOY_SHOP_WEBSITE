@@ -66,6 +66,8 @@ const AccountOrders = (props: Props) => {
       key: "quantity",
     },
     {
+      width: "10%",
+
       title: "Tên sản phẩm",
       dataIndex: "product.name",
       key: "product.name",
@@ -74,6 +76,8 @@ const AccountOrders = (props: Props) => {
       },
     },
     {
+      width: "10%",
+
       title: "Giá",
       dataIndex: "product.price",
       key: "product.price",
