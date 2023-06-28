@@ -66,7 +66,7 @@ const AccountOrders = (props: Props) => {
       key: "quantity",
     },
     {
-      width: "10%",
+      width: "30%",
 
       title: "Tên sản phẩm",
       dataIndex: "product.name",
