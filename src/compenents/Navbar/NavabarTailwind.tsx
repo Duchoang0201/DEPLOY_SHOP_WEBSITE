@@ -17,6 +17,7 @@ import router from "next/router";
 import { useAuthStore } from "@/hook/useAuthStore";
 import { PropsSearch } from "./PropsSearch";
 import { axiosClient } from "@/libraries/axiosClient";
+import Link from "next/link";
 const NavabarTailwind = () => {
   const {
     items: itemsCart,
@@ -174,12 +175,12 @@ const NavabarTailwind = () => {
                 <PhoneOutlined style={{ fontSize: 30, color: "white" }} />
               </div>
             </div>
-            <a href="/" className="items-center md:flex hidden">
+            <Link href="/" className="items-center md:flex hidden">
               <Image width={80} src={dinamontImage} alt={"Dianamont"} />
               <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
                 Diamont
               </span>
-            </a>
+            </Link>
             <div className="flex flex-wrap w-32  items-center justify-between p-2">
               {user ? (
                 <Dropdown
@@ -298,10 +299,10 @@ const NavabarTailwind = () => {
             <div className="w-20 md:hidden"></div>
             <div className="text-center justify-center">
               {" "}
-              <a href="/" className="items-center md:hidden">
+              <Link href="/" className="items-center md:hidden">
                 <Image width={80} src={dinamontImage} alt={"Dianamont"} />
                 <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"></span>
-              </a>
+              </Link>
             </div>
             <div className="flex md:order-2">
               <div className="relative hidden md:block">
@@ -423,37 +424,37 @@ const NavabarTailwind = () => {
               </div>
               <ul className=" md:flex p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
                 <li>
-                  <a
+                  <Link
                     href="/"
                     className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                     aria-current="page"
                   >
                     Trang chủ
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="/products"
                     className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                   >
                     Sản phẩm
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="thuonghieu"
                     className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                   >
                     Thương hiệu
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="lienhe"
                     className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                   >
                     Liên hệ
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
