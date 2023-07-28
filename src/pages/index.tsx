@@ -19,6 +19,7 @@ import Topmoth from "@/compenents/Mainpage/Topmonth/Topmonth";
 import Searchtrend from "@/compenents/Mainpage/Searchtrend/Searchtrend";
 import CheckoutMethod from "@/compenents/Checkout/CheckoutMethod";
 import Products from "@/compenents/Mainpage/Product/Products";
+import FacebookMsg from "@/compenents/Facebook/FacebookMsg";
 const URL_ENV = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:9000";
 
 export default function Home(props: any) {
@@ -75,6 +76,7 @@ export default function Home(props: any) {
             <Products />
           </div>
         </div>
+        <FacebookMsg />
       </main>
     </>
   );

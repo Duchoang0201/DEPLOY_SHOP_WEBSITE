@@ -37,11 +37,11 @@ const CheckoutMethod = (props: Props) => {
                 <Button
                   icon={
                     <Image
+                      className="ml-1"
                       alt={item.title}
                       src={`${URL_ENV}${item.imageUrl}`}
                       width={50}
                       height={50}
-                      style={{ fontSize: "24px", color: "white" }}
                     />
                   }
                   style={{

@@ -68,7 +68,7 @@ const NavbarAccount: React.FC = () => {
             }}
           />
         </Sider>
-        <Layout>
+        <Layout className="py-5">
           {windowWidth < 900 && trigger && (
             <Content style={{ margin: "24px 16px 0" }}>
               {keyActive === "information" && <AccountInformation />}
