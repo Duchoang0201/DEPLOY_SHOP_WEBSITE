@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 // import { Inter } from "next/font/google";
 // import styles from "@/styles/Home.module.css";
 // import NavBar from "@/compenents/Navbar/Navbar";
-import "bootstrap/dist/css/bootstrap.min.css";
+// import "bootstrap/dist/css/bootstrap.min.css";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper.min.css";
@@ -36,7 +36,7 @@ export default function Home(props: any) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="container">
+      <main className="container mx-auto">
         <Slides />
         <div style={{ backgroundColor: "rgba(246,246,246,0.9)" }}>
           <h3 className=" py-2 text-center">Phương thức thanh toán</h3>
@@ -47,7 +47,7 @@ export default function Home(props: any) {
           <h3>Danh mục yêu thích</h3>
         </Divider>
         <div style={{ backgroundColor: "rgba(246,246,246,0.9)" }}>
-          <div className="container">
+          <div className="container mx-auto">
             <Searchtrend hotTrend={hotTrend} />
           </div>
         </div>
@@ -55,7 +55,7 @@ export default function Home(props: any) {
           <h3>Hot trong tháng</h3>
         </Divider>
         <div style={{ backgroundColor: "rgba(246,246,246,0.9)" }}>
-          <div className="container">
+          <div className="container mx-auto">
             <Topmoth topMonth={topMonth} />
           </div>
         </div>
@@ -63,14 +63,14 @@ export default function Home(props: any) {
           <h3> Ưu đãi hấp dẫn </h3>
         </Divider>
         <div style={{ backgroundColor: "rgba(246,246,246,0.9)" }}>
-          <div className="container">
+          <div className="container mx-auto">
             <Hotdeal hotDeal={hotDeal} />
           </div>
         </div>
         <Divider>
           <h3> Xem thêm</h3>
         </Divider>
-        <div className="container">
+        <div className="container mx-auto">
           <div className="p-4 ">
             <Products />
           </div>
