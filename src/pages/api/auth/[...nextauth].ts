@@ -5,7 +5,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 export const authOptions: AuthOptions = {
   // Configure one or more authentication providers
-  secret: process.env.AUTH_SECRET,
+  secret: process.env.NEXT_PUBLIC_SECRET,
 
   providers: [
     CredentialsProvider({
