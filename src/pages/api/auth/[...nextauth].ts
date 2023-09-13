@@ -3,7 +3,6 @@ import NextAuth, { AuthOptions, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 export const authOptions: AuthOptions = {
-  secret: process.env.NEXT_PUBLIC_SECRET,
   // Configure one or more authentication providers
   providers: [
     CredentialsProvider({
@@ -48,13 +47,15 @@ export const authOptions: AuthOptions = {
       },
     }),
   ],
+  secret: process.env.NEXT_PUBLIC_SECRET,
+
   pages: {
     signIn: "/login",
   },
   callbacks: {
     async redirect({ baseUrl }) {
       // Customize the redirect URL here
-      baseUrl = "http://localhost:4444";
+      baseUrl = `${process.env.NEXT_PUBLIC_BASEURL}`;
       return baseUrl; // You can return a specific URL or modify it as needed
     },
     async jwt({ token, user }) {
