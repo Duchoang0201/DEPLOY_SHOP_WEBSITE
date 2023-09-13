@@ -1,12 +1,10 @@
 import { API_URL } from "@/contants/URLS";
-import useAxiosAuth from "@/libraries/axiosAuth";
 import NextAuth, { AuthOptions, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 export const authOptions: AuthOptions = {
-  // Configure one or more authentication providers
   secret: process.env.NEXT_PUBLIC_SECRET,
-
+  // Configure one or more authentication providers
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -50,6 +48,9 @@ export const authOptions: AuthOptions = {
       },
     }),
   ],
+  pages: {
+    signIn: "/login",
+  },
   callbacks: {
     async redirect({ baseUrl }) {
       // Customize the redirect URL here
