@@ -52,12 +52,13 @@ export const authOptions: AuthOptions = {
   // pages: {
   //   signIn: "/login",
   // },
+  site: "https://deploy-shop-website.vercel.app/",
   callbacks: {
-    async redirect({ baseUrl }) {
-      // Customize the redirect URL here
-      baseUrl = "https://deploy-shop-website.vercel.app/";
-      return baseUrl; // You can return a specific URL or modify it as needed
-    },
+    // async redirect({ baseUrl }) {
+    //   // Customize the redirect URL here
+    //   baseUrl = "https://deploy-shop-website.vercel.app/";
+    //   return baseUrl; // You can return a specific URL or modify it as needed
+    // },
     async jwt({ token, user }) {
       return { ...token, ...user };
     },
