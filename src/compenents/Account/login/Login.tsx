@@ -14,7 +14,7 @@ const Login = () => {
     const res = await signIn("credentials", {
       username: email,
       password: password,
-      redirect: true,
+      redirect: false,
       callbackUrl: "/",
     });
     message.success("Đăng nhập thành công !!!");

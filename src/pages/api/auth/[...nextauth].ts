@@ -50,8 +50,8 @@ export const authOptions: AuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
 
   pages: {
-    signIn: "/",
-    error: "/api/auth/error",
+    signIn: "/login",
+    // error: "/api/auth/error",
   },
   callbacks: {
     async redirect({ baseUrl }) {
