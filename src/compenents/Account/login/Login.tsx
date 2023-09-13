@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import { Button, Form, Input, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import style from "./index.module.css";
-// import "bootstrap/dist/css/bootstrap.min.css"; // Import bootstrap CSS
 import { useAuthStore } from "@/hook/useAuthStore";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/router";
 
 const Login = () => {
-  const { login } = useAuthStore((state: any) => state);
-  const { auth } = useAuthStore((state: any) => state);
-  const [refresh, setRefresh] = useState(0);
   const router = useRouter();
   const onLogin = async (values: any) => {
     const { email, password } = values;
-    await login({ email, password });
+    const res = await signIn("credentials", {
+      username: email,
+      password: password,
+      redirect: true,
+      callbackUrl: "/",
+    });
     message.success("Đăng nhập thành công !!!");
   };
 
@@ -78,9 +80,8 @@ const Login = () => {
 
           <Form.Item className="text-end py-3">
             <Button
-              type="primary"
               htmlType="submit"
-              className="login-form-button"
+              className="login-form-button bg-slate-800 text-white "
             >
               Log in
             </Button>

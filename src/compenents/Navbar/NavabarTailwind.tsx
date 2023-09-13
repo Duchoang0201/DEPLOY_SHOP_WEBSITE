@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import style from "./Navbar.module.css";
 import dinamontImage from "./transparent-jewelry-icon-diamond-icon-60251ec5ca3757.4392206316130454458283.png";
 import Image from "next/image";
-import { Avatar, Badge, Drawer, Dropdown, Space, message } from "antd";
+import { Avatar, Badge, Dropdown, Space, message } from "antd";
 import { useCartStore } from "@/hook/useCountStore";
 import { API_URL } from "@/contants/URLS";
 import {
@@ -14,20 +14,18 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import router from "next/router";
-import { useAuthStore } from "@/hook/useAuthStore";
-import { PropsSearch } from "./PropsSearch";
-import { axiosClient } from "@/libraries/axiosClient";
 import Link from "next/link";
+import { PropsSearch } from "@/hook/PropsSearch";
+import { signOut, useSession } from "next-auth/react";
 const NavabarTailwind = () => {
-  const {
-    items: itemsCart,
-    removeAllCheck,
-    getDataServer,
-  }: any = useCartStore((state: any) => state);
+  const timeoutSearch = useRef<any>();
+  const { items: itemsCart, removeAllCheck }: any = useCartStore(
+    (state: any) => state
+  );
 
-  const { auth, logout } = useAuthStore((state: any) => state);
-  const { search }: any = PropsSearch((state: any) => state);
-  const [user, setUser] = useState<any>(null);
+  const { data: session } = useSession();
+  const user = session?.user;
+  const { productSearch } = PropsSearch((state: any) => state);
   const [scroll, setScroll] = useState<number>(10);
   const [windowWidth, setWindowWidth] = useState<number>(0);
   const [openNavbar, setOpenNavbar] = useState(false);
@@ -58,39 +56,6 @@ const NavabarTailwind = () => {
     };
   }, []);
 
-  useEffect(() => {
-    axiosClient
-      .get("/customers/login/profile")
-      .then(async (res) => {
-        setUser(res.data);
-
-        let cart: any = [];
-        if (res?.data) {
-          const checkCart: any = await axiosClient.get(
-            `/carts/customer/${res?.data?._id}`
-          );
-          if (checkCart?.data?.cart?._id) {
-            cart = checkCart.data.cart;
-            getDataServer(cart, res?.data?._id);
-          } else {
-            await axiosClient
-              .post(`/carts`, {
-                customerId: res?.data?._id,
-                products: [],
-              })
-              .then((res) => {
-                cart = res.data.result;
-                getDataServer(cart, res?.data?._id);
-              })
-              .catch((err) => {
-                console.log(`⚠️⚠️⚠️!! err `, err);
-              });
-          }
-        }
-      })
-      .catch((err) => console.log(`⚠️⚠️⚠️!! err `, err));
-  }, [auth?.token, getDataServer]);
-
   const itemsAccount = [
     {
       key: "information",
@@ -112,9 +77,8 @@ const NavabarTailwind = () => {
       label: (
         <div
           onClick={() => {
-            setUser(null);
+            signOut();
             removeAllCheck();
-            logout();
           }}
         >
           <Space>
@@ -158,12 +122,11 @@ const NavabarTailwind = () => {
       ),
     },
   ];
-  // console.log(`🚀🚀🚀!..count`, count);
   return (
     <>
       <div className={scroll > 60 ? style.container : style.contaier__Scroll}>
         <nav className="bg-white border-gray-200 dark:bg-gray-900">
-          <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+          <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-1">
             <div className="flex flex-wrap w-32  items-center justify-between p-2">
               <div className="transition duration-300 ease-in-out hover:scale-110 cursor-pointer ">
                 {" "}
@@ -295,7 +258,7 @@ const NavabarTailwind = () => {
         </nav>
 
         <nav className="bg-white border-gray-200 dark:bg-gray-900">
-          <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+          <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-1">
             <div className="w-20 md:hidden"></div>
             <div className="text-center justify-center">
               {" "}
@@ -324,13 +287,17 @@ const NavabarTailwind = () => {
                     data-te-ripple-init
                     onClick={() => {
                       if (searchProduct) {
-                        search(searchProduct);
+                        if (timeoutSearch.current) {
+                          clearTimeout(timeoutSearch.current);
+                        }
+                        productSearch(searchProduct);
                         router.push(`/searchpage`);
-                        setTimeout(() => {
+
+                        timeoutSearch.current = setTimeout(() => {
                           setSearchProduct("");
-                        }, 1000);
+                        }, 2000);
                       }
-                      {
+                      if (!searchProduct) {
                         message.error("Vui lòng nhập tên sản phẩm!!");
                       }
                     }}
@@ -408,7 +375,7 @@ const NavabarTailwind = () => {
                     id="button-addon3"
                     onClick={async () => {
                       if (searchProduct) {
-                        await search(searchProduct);
+                        await productSearch(searchProduct);
                         router.push(`/searchpage`);
                         setSearchProduct("");
                         setOpenNavbar(false);
