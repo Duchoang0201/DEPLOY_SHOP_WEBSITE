@@ -53,11 +53,11 @@ export const authOptions: AuthOptions = {
     signIn: "/login",
   },
   callbacks: {
-    async redirect({ baseUrl }) {
-      // Customize the redirect URL here
-      baseUrl = `${process.env.NEXT_PUBLIC_BASEURL}`;
-      return baseUrl; // You can return a specific URL or modify it as needed
-    },
+    // async redirect({ baseUrl }) {
+    //   // Customize the redirect URL here
+    //   baseUrl = `${process.env.NEXT_PUBLIC_BASEURL}`;
+    //   return baseUrl; // You can return a specific URL or modify it as needed
+    // },
     async jwt({ token, user }) {
       return { ...token, ...user };
     },
