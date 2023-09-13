@@ -52,7 +52,6 @@ export const authOptions: AuthOptions = {
   // pages: {
   //   signIn: "/login",
   // },
-  site: "https://deploy-shop-website.vercel.app/",
   callbacks: {
     // async redirect({ baseUrl }) {
     //   // Customize the redirect URL here
