@@ -49,15 +49,16 @@ export const authOptions: AuthOptions = {
   ],
   secret: process.env.NEXT_PUBLIC_SECRET,
 
-  // pages: {
-  //   signIn: "/login",
-  // },
+  pages: {
+    signIn: "/api/auth/signin",
+    error: "/api/auth/error",
+  },
   callbacks: {
-    // async redirect({ baseUrl }) {
-    //   // Customize the redirect URL here
-    //   baseUrl = "https://deploy-shop-website.vercel.app/";
-    //   return baseUrl; // You can return a specific URL or modify it as needed
-    // },
+    async redirect({ baseUrl }) {
+      // Customize the redirect URL here
+      baseUrl = "https://deploy-shop-website.vercel.app/";
+      return baseUrl; // You can return a specific URL or modify it as needed
+    },
     async jwt({ token, user }) {
       return { ...token, ...user };
     },
