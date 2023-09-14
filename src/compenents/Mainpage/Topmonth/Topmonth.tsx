@@ -70,8 +70,8 @@ export default function Topmoth({ topMonth }: any) {
             },
           }}
         >
-          {topMonth.length > 0 &&
-            topMonth.map((item: any, index: any) => (
+          {topMonth?.length > 0 &&
+            topMonth?.map((item: any, index: any) => (
               <SwiperSlide key={`${item._id}-${index + 1}-${item.name}`}>
                 <Badge.Ribbon text={item.discount > 5 ? "Giảm giá " : ""}>
                   <Card

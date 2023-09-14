@@ -41,8 +41,8 @@ export default function App({ hotTrend }: any) {
           },
         }}
       >
-        {hotTrend.length > 0 &&
-          hotTrend.map((item: any, index: any) => (
+        {hotTrend?.length > 0 &&
+          hotTrend?.map((item: any, index: any) => (
             <SwiperSlide
               key={`${item._id}-${index + 1}-${item.name}`}
               onClick={() => {

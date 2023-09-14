@@ -50,8 +50,8 @@ export default function App({ hotDeal }: any) {
         autoplay={autoplayConfig}
         loop={true}
       >
-        {hotDeal.length > 0 &&
-          hotDeal.map((item: any, index: any) => (
+        {hotDeal?.length > 0 &&
+          hotDeal?.map((item: any, index: any) => (
             <SwiperSlide key={`${item._id}-${index + 1}`}>
               <Badge.Ribbon
                 key={`${item._id}-${index}`}
