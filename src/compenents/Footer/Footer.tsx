@@ -50,9 +50,7 @@ function Footer({}: Props) {
                     <p className="hover:underline">MOMO</p>
                   </li>
                   <li>
-                    <p href="#" className="hover:underline">
-                      VN PAY
-                    </p>
+                    <p className="hover:underline">VN PAY</p>
                   </li>
                 </ul>
               </div>
