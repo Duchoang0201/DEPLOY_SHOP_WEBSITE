@@ -6,17 +6,16 @@ import Image from "next/image";
 import dinamontImage from "../Navbar/transparent-jewelry-icon-diamond-icon-60251ec5ca3757.4392206316130454458283.png";
 
 type Props = {};
-const URL_ENV = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:9000";
 function Footer({}: Props) {
   return (
-    <>
+    <div>
       <hr />
 
       <footer className="bg-white dark:bg-gray-900">
         <div className="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
           <div className="md:flex md:justify-between">
             <div className="mb-6 md:mb-0">
-              <a href="https://flowbite.com/" className="flex items-center">
+              <a href="/" className="flex items-center">
                 <Image width={40} src={dinamontImage} alt={"Dianamont"} />
                 <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
                   Jwelry Shop
@@ -64,8 +63,8 @@ function Footer({}: Props) {
           <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
         </div>
       </footer>
-    </>
+    </div>
   );
 }
 
-export default memo(Footer);
+export default Footer;

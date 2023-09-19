@@ -109,7 +109,7 @@ const NavabarTailwind = () => {
   return (
     <>
       <div>
-        <nav className="bg-white border-gray-200 dark:bg-gray-900">
+        <nav className="bg-white border-gray-200 dark:bg-gray-900 py-2">
           <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-1">
             <div className="text-center justify-center">
               {" "}
