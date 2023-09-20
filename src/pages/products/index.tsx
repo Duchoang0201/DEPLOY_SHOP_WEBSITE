@@ -147,9 +147,6 @@ const Products = ({ data }: any) => {
                                 message.success(
                                   {
                                     content: "Thêm 1 sản phẩm vào giỏ hàng!",
-                                    style: {
-                                      marginTop: 170,
-                                    },
                                   },
                                   1.5
                                 );
@@ -158,9 +155,6 @@ const Products = ({ data }: any) => {
                                 message.success(
                                   {
                                     content: "Đã thêm sản phẩm vào giỏ hàng!",
-                                    style: {
-                                      paddingTop: 170,
-                                    },
                                   },
                                   1.5
                                 );
